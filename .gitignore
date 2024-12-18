@@ -1,4 +1,4 @@
 /build
-/pico-sdk
+pico-sdk
 /docker
 /.vscode
