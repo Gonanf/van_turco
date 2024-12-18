@@ -1,10 +1,13 @@
-#include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 
 
+#ifndef CYW43_WL_GPIO_LED_PIN
+#define CYW43_WL_GPIO_LED_PIN 0
+#endif
+
 /**
- * @brief
+ * @brief main execution point of the microkernel
  *
  * @return int
  */
@@ -17,6 +20,5 @@ int main() {
     cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, false);
     sleep_ms(250);
     }
-    printf("Hello, world!\n");
     return 0;
 }

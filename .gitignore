@@ -1,4 +1,4 @@
 /build
-/local
 /pico-sdk
 /docker
+/.vscode
