@@ -1,0 +1,52 @@
+.program vsync
+.side_set 1 opt ; set 1 pin to concurrently set high or low
+pull block
+.wrap_target
+mov x osr ; Get from OSR the resolution - 1
+
+;Main frame, the rest is only syncronizations
+draw_columns:
+    wait 1 irq 0 ; Wait for HSYNC to interrupt
+    irq 1 ; Send interrupt (To RGB program) to proceed
+    jmp x-- draw_columns
+
+;Front porch
+set y, 9 ; From 0 - 9, 10 lines of front porch for 640x480
+frontporch:
+    wait 1 irq 0 ; Wait for HSYNC to interrupt
+    jmp y-- frontporch
+
+
+;Sync pulse (2 lines)
+set pins, 0
+wait 1 irq 0 ; Sync pulse: Wait for 1 line
+wait 1 irq 0 ; Sync pulse: Wait for 1 line
+
+
+;Back porch
+set y, 31 ; From 0 - 31, 32 lines of back porch for 640x480
+backporch:
+wait 1 irq 0 side 1; Wait for HSYNC to interrupt
+jmp y-- backporch
+
+.wrap
+
+% c-sdk{
+    static inline void vsync_program_init(PIO pio, uint sm /*state machine*/, uint offset /*PIO program offset*/, uint pin){
+        //Config object
+        pio_sm_config c = vsync_program_get_default_config(offset);
+        
+        //VSYNC pin
+        sm_config_set_set_pins(&c, pin, 1);
+        sm_config_set_sideset_pins(&c, pin);
+
+        sm_config_set_clkdiv(&c, 5); // 25MHz
+        //Set pins
+        pio_gpio_init(pio, pin);
+
+        //Sets all the pins into output
+        pio_sm_set_consecutive_pindirs(pio, sm, pin, 1, true);  
+
+        pio_sm_init(pio, sm, offset, &c); 
+    }
+%}

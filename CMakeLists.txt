@@ -19,7 +19,13 @@ ENDIF()
 project(van_turco)
 pico_sdk_init() 
 
+
 add_executable(van_turco ./src/main.cpp)
-target_link_libraries(van_turco pico_stdlib pico_cyw43_arch_none )
+
+pico_generate_pio_header(van_turco ${CMAKE_CURRENT_LIST_DIR}/modules/vga_test/rgb.pio)
+pico_generate_pio_header(van_turco ${CMAKE_CURRENT_LIST_DIR}/modules/vga_test/hsync.pio)
+pico_generate_pio_header(van_turco ${CMAKE_CURRENT_LIST_DIR}/modules/vga_test/vsync.pio)
+
+target_link_libraries(van_turco pico_stdlib pico_cyw43_arch_none hardware_pio hardware_dma hardware_adc hardware_irq )
 
 pico_add_extra_outputs(van_turco)

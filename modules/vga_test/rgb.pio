@@ -1,0 +1,38 @@
+.program rgb
+
+pull block ; pulls TXF to the OSR
+mov y osr ; Save in Y scratch register whatever is in OSR
+
+.wrap_target ; Loop start
+set pins 0 ; Set pins to 0
+mov x y ; Save Y as an interator in X
+wait 1 irq 1 [3] ; Wait for the VSYNC interrupt, and then continue
+color:
+    pull block ; Pulls if new data
+    out pins 3 [4] ; Output 3 bits of OSR into the 3 rgb pins
+    out pins 3 [2] ; Sync, and send next pixel
+    jmp x-- color ; Jump back to color, and decrement X
+
+.wrap ; Loop end
+% c-sdk{
+    static inline void rgb_program_init(PIO pio, uint sm /*state machine*/, uint offset /*PIO program offset*/, uint pin){
+        //Config object
+        pio_sm_config c = rgb_program_get_default_config(offset);
+        
+        //RGB pins
+        sm_config_set_set_pins(&c, pin, 3);
+        sm_config_set_out_pins(&c, pin, 3);
+        
+        //Set pins
+        pio_gpio_init(pio, pin); //B
+        pio_gpio_init(pio, pin+1);  //G      
+        pio_gpio_init(pio, pin+2);     //R
+        //pio_gpio_init(pio, pin+3);     //A?
+
+
+        //Sets all the pins into output
+        pio_sm_set_consecutive_pindirs(pio, sm, pin, 3, true);   
+
+        pio_sm_init(pio, sm, offset, &c);
+    }
+%}
