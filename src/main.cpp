@@ -1,6 +1,6 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
-#include "../modules/vga_test/vga.h"
+#include "vga_test/vga.h"
 #include "../modules/mod.cpp"
 #include "libarbys/libarbys.hpp"
 
