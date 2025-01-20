@@ -2,12 +2,37 @@
 #include "pico/cyw43_arch.h"
 #include "vga_test/vga.h"
 #include "libarbys/libarbys.hpp"
-#include "kernel32/scheduler/scheduler.hpp"
-#include "kernel32/interrupts/interrupts.hpp"
+#include "../kernel32/kernel32.hpp"
 
 #ifndef CYW43_WL_GPIO_LED_PIN
 #define CYW43_WL_GPIO_LED_PIN 0
 #endif
+
+void test1(void){
+    while (true)
+    {
+        printf("test1");
+        asm volatile("svc #0");
+    }
+}
+
+void test2(void){
+    while (true)
+    {
+        printf("test2");
+        asm volatile("svc #0");
+    }
+    
+}
+
+void test3(void){
+    while (true)
+    {
+        printf("test3");
+        asm volatile("svc #0");
+    }
+    
+}
 
 /**
  * @brief main execution point of the microkernel
@@ -22,20 +47,29 @@ int main()
     // start_vga_test();
     string_L buffer;
     buffer.allocate(1024);
-    scheduler_global.create();
-    while (true)
+    printf("Starting\n");
+
+    KERNEL32::scheduler sch;
+    KERNEL32::init();
+    printf("Kernel started\n");
+    sch.create_process(test1);
+    sch.create_process(test2);
+    sch.create_process(test3);
+    sch.start_scheduling();
+    /*while (true)
     {
+
             promise_L prom = buffer.read_character();
             if (prom.is_done)
             {
                 buffer.split();
                 printf("finished: %d\n",buffer.size);
-                scheduler_global.execute();
                 buffer.empty();
                 printf("finished2: %d\n",buffer.size);
                 buffer.print();
             }
-    }
+           
+    }*/
 
     return 0;
 }

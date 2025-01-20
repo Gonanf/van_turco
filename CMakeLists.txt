@@ -16,10 +16,10 @@ ELSE()
     set(PICO_SDK_FETCH_FROM_GIT on)
     include(pico_sdk_import.cmake)
 ENDIF()
-project(van_turco)
+project(van_turco C CXX ASM) 
 pico_sdk_init() 
 
-add_executable(van_turco ./src/main.cpp)
+add_executable(van_turco ./src/main.cpp ./kernel32/context/svc.s ./kernel32/kernel32.hpp)
 
 IF (DEFINED ENV{BOMBAY_PATH})
 message(STATUS "BOMBAY_PATH found")

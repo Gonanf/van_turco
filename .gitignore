@@ -1,4 +1,4 @@
-/build
+/build/**
 /pico-sdk/**
 /pico-sdk/
 Dockerfile
