@@ -85,22 +85,26 @@ isr_svcall:
         push_r0 lr
 
         __save_context
+        msr psp, r0
 
         /*Now the process is saved into the stack */
         /*Now we load the kernel from the Main Stack Pointer (Remembering we are in handler mode at this interrupt) */
 
-         pop_sp r8
-         pop_sp r9
-         pop_sp r10
-         pop_sp r11
-         pop_sp r4
-         pop_sp r5
-         pop_sp r6
-         pop_sp r7
+        pop_sp r8
+        pop_sp r9
+        pop_sp r10
+        pop_sp r11
+        pop_sp r4
+        pop_sp r5
+        pop_sp r6
+        pop_sp r7
+
+         
 
          pop_sp r12
         msr psr_nzcvq, ip
-         pop_sp pc /*Now it is getting LR (The address it should return) as the program counter (The address it is executing) */
+
+         pop {pc} /*Now it is getting LR (The address it should return) as the program counter (The address it is executing) */
         
 
 .global _save_kernel
@@ -129,18 +133,17 @@ _save_kernel:
 _switch_handler:
         mrs ip, psr /*Save into r12 the process state register */
         push_sp lr
-        push_sp r7
-        push_sp r6
-        push_sp r5
-        push_sp r4
         push_sp r12
-        push_sp r11
-        push_sp r10
-        push_sp r9
-        push_sp r8
+        mov r2, r0
+
+        mrs r0, msp
+
+        __save_context
+
+        msr msp, r0
 
 
-        msr psp, r0 /*R0 is a parameter */
+        msr psp, r2 /*R0 is a parameter */
         movs r0, #2 /*Privileged and in thread mode (Use the psp)*/
         msr control, r0
         isb /*clear the pipeline */
