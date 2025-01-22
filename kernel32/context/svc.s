@@ -83,13 +83,12 @@ isr_svcall:
         /*Save process */
         mrs r0, psp /*r0 is now the process stack pointer (top of the process stack)*/
         push_r0 lr
-
         __save_context
         msr psp, r0
 
         /*Now the process is saved into the stack */
         /*Now we load the kernel from the Main Stack Pointer (Remembering we are in handler mode at this interrupt) */
-
+        @mrs r0, msp
         pop_sp r8
         pop_sp r9
         pop_sp r10
@@ -103,7 +102,7 @@ isr_svcall:
 
          pop_sp r12
         msr psr_nzcvq, ip
-
+        @msr msp, r0
          pop {pc} /*Now it is getting LR (The address it should return) as the program counter (The address it is executing) */
         
 
