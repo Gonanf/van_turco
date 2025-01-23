@@ -11,7 +11,7 @@
 void test1(void){
     while (true)
     {
-        printf("test1");
+        printf("test1\n");
         asm volatile("svc #0");
     }
 }
@@ -19,7 +19,7 @@ void test1(void){
 void test2(void){
     while (true)
     {
-        printf("test2");
+        printf("test2\n");
         asm volatile("svc #0");
     }
     
@@ -28,7 +28,7 @@ void test2(void){
 void test3(void){
     while (true)
     {
-        printf("test3");
+        printf("test3\n");
         asm volatile("svc #0");
     }
     
@@ -50,13 +50,14 @@ int main()
     printf("Starting\n");
 
     KERNEL32::scheduler sch;
-    KERNEL32::init();
+    KERNEL32::init_kernel();
     printf("Kernel started\n");
+    sch.prepare_scheduler();
     sch.create_process(test1);
     sch.create_process(test2);
     sch.create_process(test3);
     sch.start_scheduling();
-    /*while (true)
+    while (true)
     {
 
             promise_L prom = buffer.read_character();
@@ -69,7 +70,7 @@ int main()
                 buffer.print();
             }
            
-    }*/
+    }
 
     return 0;
 }
