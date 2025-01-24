@@ -20,15 +20,26 @@ int iter = 0;
      for (int i = 0; i < PROCESS_LIMIT; i++){
         printf("%d = %d\n",i,this->programs[i].status);
     }
-    getchar();
     while (true){
         if (this->current_program > 2){
             this->current_program = 0;
         }
-        if (this->programs[this->current_program].status != program_state::STOPPED){
-            this->programs[this->current_program].start();
 
+        switch (this->programs[this->current_program].status)
+        {
+        case program_state::SLEEP:
+            if (to_ms_since_boot(get_absolute_time()) > this->programs[this->current_program].stack[9]){
+                this->programs[this->current_program].status = program_state::READY;
+            }
+            break;
+        case program_state::STOPPED:
+        break;
+
+        default:
+         this->programs[this->current_program].start();
+            break;
         }
+
         //printf("%d\n",iter++);
         this->current_program++;
     }
@@ -39,5 +50,10 @@ unsigned int scheduler::prepare_scheduler(){
         printf("Preparing frame for process %d, with stack %p\n",i,this->stack_programs[i]);
         this->programs[i].prepare_frame(this->stack_programs[i],i);
     }
+    return 0;
+}
+
+unsigned int scheduler::remove_process(unsigned int PID){
+    this->programs[PID].prepare_frame(this->stack_programs[PID],PID);
     return 0;
 }

@@ -8,7 +8,7 @@ namespace KERNEL32{
     #include"./context/init/init.hpp"
     #include"./process/process.hpp"
     #include"./scheduler/scheduler.hpp"
-
+    #include"./syscalls/syscall.hpp"
     
 }
 #endif

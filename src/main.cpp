@@ -8,19 +8,25 @@
 #define CYW43_WL_GPIO_LED_PIN 0
 #endif
 
-void test1(void){
+void sleep_example(void){
     while (true)
     {
-        printf("test1\n");
+        printf("Sleeping for 1 second\n");
+        asm volatile("mov r0, #0");
+        asm volatile("ldr r1, =1000");
         asm volatile("svc #0");
+        printf("I am awake!\n");
+
     }
 }
 
-void test2(void){
+void exit_example(void){
     while (true)
     {
-        printf("test2\n");
+        printf("Exiting\n");
+        asm volatile("mov r0, #1");
         asm volatile("svc #0");
+        printf("This should not be displayed");
     }
     
 }
@@ -52,10 +58,11 @@ int main()
     KERNEL32::scheduler sch;
     KERNEL32::init_kernel();
     printf("Kernel started\n");
+    global_scheduler = &sch;
     sch.prepare_scheduler();
-    sch.create_process(test1);
-    sch.create_process(test2);
-    sch.create_process(test3);
+    sch.create_process(sleep_example);
+    sch.create_process(exit_example);
+    //sch.create_process(test3);
     sch.start_scheduling();
     while (true)
     {

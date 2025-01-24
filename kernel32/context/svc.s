@@ -15,7 +15,7 @@
  * R3
  * R2
  * R1
- * R0
+ * R0 [9]
  * 
  * So all of these registers are free and already allocated into the process stack, whe have to allocate the following,
  * 
@@ -96,6 +96,7 @@ and this could be more efficient if i didn't care about order
         pop_r0 r11
 .endm
 
+.global syscall
 
 .type isr_svcall, %function
 .global isr_svcall
@@ -104,7 +105,9 @@ isr_svcall:
         mrs r0, psp /*r0 is now the process stack pointer (top of the process stack)*/
         push_r0 lr
         __save_context
-        msr psp, r0
+        msr psp, r0 /*Now R0 is a parameter for the syscall, containing the process stack */
+
+        bl syscall
 
         /*Now the process is saved into the stack */
         /*Now we load the kernel from the Main Stack Pointer (Remembering we are in handler mode at this interrupt) */
