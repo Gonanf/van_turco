@@ -46,6 +46,7 @@ int iter = 0;
 }
 
 unsigned int scheduler::prepare_scheduler(){
+    printf("Stack: %p --- %p (Difference = %p), Memory: %d words \n",this->stack_programs, this->stack_programs + (STACK_FRAME_SIZE * PROCESS_LIMIT),(this->stack_programs + (STACK_FRAME_SIZE * PROCESS_LIMIT)) -this->stack_programs,(STACK_FRAME_SIZE * PROCESS_LIMIT));
     for (int i = 0; i < PROCESS_LIMIT; i++){
         printf("Preparing frame for process %d, with stack %p\n",i,this->stack_programs[i]);
         this->programs[i].prepare_frame(this->stack_programs[i],i);

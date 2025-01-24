@@ -1,0 +1,3 @@
+[] Make it preemptive with a hardware timer
+[] Treat input/output as files
+[] Add a syscall table, and a register_syscall function pointing into a process function

@@ -31,11 +31,20 @@ void exit_example(void){
     
 }
 
-void test3(void){
+void shell_basic(void){
+    string_L buffer;
+    buffer.allocate(1024);
     while (true)
     {
-        printf("test3\n");
-        asm volatile("svc #0");
+            promise_L prom = buffer.read_character();
+            if (prom.is_done)
+            {
+                buffer.split();
+                printf("finished: %d\n",buffer.size);
+                buffer.empty();
+                printf("finished2: %d\n",buffer.size);
+                buffer.print();
+            }
     }
     
 }
@@ -51,8 +60,7 @@ int main()
     cyw43_arch_init();
     cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, true);
     // start_vga_test();
-    string_L buffer;
-    buffer.allocate(1024);
+
     printf("Starting\n");
 
     KERNEL32::scheduler sch;
@@ -60,24 +68,11 @@ int main()
     printf("Kernel started\n");
     global_scheduler = &sch;
     sch.prepare_scheduler();
-    sch.create_process(sleep_example);
-    sch.create_process(exit_example);
-    //sch.create_process(test3);
+    //sch.create_process(sleep_example);
+    //sch.create_process(exit_example);
+    sch.create_process(shell_basic);
     sch.start_scheduling();
-    while (true)
-    {
-
-            promise_L prom = buffer.read_character();
-            if (prom.is_done)
-            {
-                buffer.split();
-                printf("finished: %d\n",buffer.size);
-                buffer.empty();
-                printf("finished2: %d\n",buffer.size);
-                buffer.print();
-            }
-           
-    }
+    
 
     return 0;
 }

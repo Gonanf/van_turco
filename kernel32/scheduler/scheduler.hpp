@@ -1,7 +1,8 @@
 #ifndef KERNEL32_SCHEDULER
 #define KERNEL32_SCHEDULER
 #include"../process/process.hpp"
-/*264KB of RAM, 4kb of stack memory, in words that would be 1024 in a 32 bits system,we can only store 3 applications with 256 word*/
+/*264KB of RAM, 4kb of stack memory, in words that would be 1024 in a 32 bits system,we can only store 3 applications with 256 word
+if we only used the scratch Y memory,but we are going to overflow into the scratch X memory to allow for 7 applications*/
 class scheduler{
     public:
     process programs[PROCESS_LIMIT];
