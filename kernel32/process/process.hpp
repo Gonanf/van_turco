@@ -1,16 +1,14 @@
 #ifndef KERNEL32_PROCESS
 #define KERNEL32_PROCESS
-enum{STOPPED,SLEEP,READY,RUNNING,INTERRUPTED} typedef program_state;
 
 typedef void (*func)(void);
 class process{
-    private:
-     unsigned int* prepare_stack(func function);
-
     public:
     int PID;
     program_state status;
     unsigned int* stack;
+    messages queque;
+    
 
     process create(func function);
     unsigned int start();

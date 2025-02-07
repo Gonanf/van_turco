@@ -1,3 +1,14 @@
 [] Make it preemptive with a hardware timer
+[] Add loggin system and debug modes
+[] Add device drivers (Maine Coon), especially for the sd card interface
+[] Add Elf support
+[] EVERYTHING IS A FILE
 [] Treat input/output as files
-[] Add a syscall table, and a register_syscall function pointing into a process function
+[X] Add a syscall table, and a register_syscall function pointing into a process function /*Optional with messaging system*/
+[] Implement Priority
+- [] Implement priority inheritance (Priority inversion)
+[] Implement mutexes for the I/O resources and devices (Extern components)
+[V] Implement Messaging system for the tasks
+[V] Manage Inter Process Comunication
+[] Add Error Codes
+[] Make Libarbys a process (Like STDIO functionality)

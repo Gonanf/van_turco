@@ -24,7 +24,7 @@ unsigned int process::prepare_frame(unsigned int* stack, unsigned int PID){
     this->stack[8] = 0xFFFFFFFD; /*This is the kernel saved LR, we are goint to return the end of the interrupt to restore the hardware saved registers*/
     this->stack[16] = 0x01000000; /*Tell the PSR to run in Thumb state by putting it in the default state*/
     this->status = program_state::STOPPED;
-    printf("STACK: %p\n",this->stack);
+    KERNEL32::print("STACK: %p\n",this->stack);
     return 0;
 }
 
