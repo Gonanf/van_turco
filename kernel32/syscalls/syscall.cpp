@@ -11,10 +11,18 @@ extern "C" unsigned int syscall(unsigned int *r0)
     }
     switch (r0[9] /*9 is the index for the hardware saved r0, see svc.s*/)
     {
+    case YIELD:
+       {
+        /*Set r1 into the wait time (We are going to use this later in the scheduler)*/
+         /* r0[10] = to_ms_since_boot(get_absolute_time()) + r0[10];
+        global_scheduler->programs[global_scheduler->current_program].status = program_state::SLEEP;*/
+        return 1;
+       }
+        break;
     case WAIT:
        {
         /*Set r1 into the wait time (We are going to use this later in the scheduler)*/
-          r0[10] = to_ms_since_boot(get_absolute_time()) + r0[10];
+        r0[10] = to_ms_since_boot(get_absolute_time()) + r0[10];
         global_scheduler->programs[global_scheduler->current_program].status = program_state::SLEEP;
         return 1;
        }
@@ -58,13 +66,7 @@ extern "C" unsigned int syscall(unsigned int *r0)
             return 1;
             }
         break;
-    case GETPID:
-        r0[9] = global_scheduler->current_program;
-        return 0;
-    case PRINTC:
-        r0[9] = global_scheduler->current_program;
-        return 0;
-    case GETC:
+    case GETPINFO:
         r0[9] = global_scheduler->current_program;
         return 0;
     break;

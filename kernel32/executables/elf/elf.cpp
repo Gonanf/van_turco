@@ -49,7 +49,7 @@ int elf::wrap(uint8_t* bytes, unsigned int size)
 
     /*If the entry point expands certain offset (The flash limit for example), change into the device driver with the file system*/
     this->entry_point = (int)*(bytes + 23);
-
+    KERNEL32::print("entry: %p",this->entry_point);
 
  return 0;
 

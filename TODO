@@ -1,7 +1,7 @@
-[] Make it preemptive with a hardware timer
-[] Add loggin system and debug modes
+[X] Make it preemptive with a hardware timer
+[X] Add loggin system and debug modes
 [] Add device drivers (Maine Coon), especially for the sd card interface
-[] Add Elf support
+[X] Add Elf support
 [] EVERYTHING IS A FILE
 [] Treat input/output as files
 [X] Add a syscall table, and a register_syscall function pointing into a process function /*Optional with messaging system*/
@@ -11,4 +11,4 @@
 [V] Implement Messaging system for the tasks
 [V] Manage Inter Process Comunication
 [] Add Error Codes
-[] Make Libarbys a process (Like STDIO functionality)
+[] Make Libarbys a library (Like STDIO functionality)

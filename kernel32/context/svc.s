@@ -108,7 +108,8 @@ isr_svcall:
         msr psp, r0 /*Now R0 is a parameter for the syscall, containing the process stack */
 
         bl syscall
-
+        movs r0, #3 /*Privileged and in thread mode (Use the psp)*/
+        msr control, r0
         /*Now the process is saved into the stack */
         /*Now we load the kernel from the Main Stack Pointer (Remembering we are in handler mode at this interrupt) */
         mov r0, sp
@@ -132,7 +133,8 @@ _switch_context:
         __save_context
 
         msr msp, r0
-
+        /*movs r0, 00000000000000000000000000000010
+        msr control, r0*/
         /*load process */
         mov r0, r2
         /*R0 is a parameter from the interrupts.c that is a pointer to the PSP */
@@ -140,6 +142,7 @@ _switch_context:
         pop_r0 lr
 
         msr psp, r0 /*adjust the process stack pointer into the adress withouth the saved registers */
+        
         bx lr /*jump to resume process */
 
 .global _switch_handler
@@ -158,8 +161,8 @@ _switch_handler:
 
 
         msr psp, r2 /*R0 is a parameter */
-        movs r0, #2 /*Privileged and in thread mode (Use the psp)*/
+        movs r0, #3 /*Privileged and in thread mode (Use the psp)*/
         msr control, r0
         isb /*clear the pipeline */
+        nop
         svc #0 /*Switch again into the kernel but now in handler mode */
-

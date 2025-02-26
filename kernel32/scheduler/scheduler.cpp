@@ -15,12 +15,10 @@ int scheduler::create_process(func function){
 }
 
 unsigned int scheduler::start_scheduling(){
-int iter = 0;
-    KERNEL32::print("%d\n",this->programs[0].stack - this->programs[1].stack);
-     for (int i = 0; i < PROCESS_LIMIT; i++){
-        KERNEL32::print("%d = %d\n",i,this->programs[i].status);
-    }
     while (true){
+        #ifdef KERNEL32_PREEMPTIVE
+            KERNEL32::reset_systick();
+        #endif
         if (this->current_program > PROCESS_LIMIT){
             this->current_program = 0;
         }
@@ -35,18 +33,24 @@ int iter = 0;
         case program_state::STOPPED:
         break;
 
-
-        default:
+    /*Story: I used to put this following code in default but it ended up executing process that where not running or ready*/
+        case program_state::RUNNING:
+        case program_state::READY:
          this->programs[this->current_program].start();
             break;
+
+        default:
+        break;
         }
 
-        //KERNEL32::print("%d\n",iter++);
         this->current_program++;
     }
 }
 
 unsigned int scheduler::prepare_scheduler(){
+    #ifdef KERNEL32_PREEMPTIVE
+            KERNEL32::set_hw_systick_priority();
+    #endif
     KERNEL32::print("Stack: %p --- %p (Difference = %p), Memory: %d words \n",this->stack_programs, this->stack_programs + (STACK_FRAME_SIZE * PROCESS_LIMIT),(this->stack_programs + (STACK_FRAME_SIZE * PROCESS_LIMIT)) -this->stack_programs,(STACK_FRAME_SIZE * PROCESS_LIMIT));
     for (int i = 0; i < PROCESS_LIMIT; i++){
         KERNEL32::print("Preparing frame for process %d, with stack %p\n",i,this->stack_programs[i]);

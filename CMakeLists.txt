@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 3.13)
 set(PICO_BOARD "pico_w")
+IF (CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+    MESSAGE(STATUS "DEBUG MODE")
+    SET(CMAKE_BUILD_TYPE Debug)
+    add_compile_definitions(__DEBUG)
+ELSE()
+    MESSAGE(STATUS "RELEASE MODE")
+    SET(CMAKE_BUILD_TYPE Release)
+ENDIF()
 
 IF (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/pico-sdk)
     message(STATUS "Pico SDK found in the source directory")
@@ -19,7 +27,7 @@ ENDIF()
 project(van_turco C CXX ASM) 
 pico_sdk_init() 
 
-add_executable(van_turco ./src/main.cpp ./kernel32/context/svc.s ./kernel32/kernel32.hpp)
+add_executable(van_turco ./src/main.cpp ./kernel32/context/svc.s  ./kernel32/kernel32.hpp)
 
 IF (DEFINED ENV{BOMBAY_PATH})
 message(STATUS "BOMBAY_PATH found")
@@ -32,16 +40,15 @@ include(${CMAKE_CURRENT_LIST_DIR}/../bombay/import.cmake)
 ENDIF()
 target_link_libraries(van_turco pico_stdlib pico_stdlib pico_cyw43_arch_none hardware_pio hardware_dma hardware_adc hardware_irq )
 IF (DEFINED ENV{LIBARBYS_PATH})
-message(STATUS "LIBARBYS PATH found")
-
-target_include_directories(van_turco PUBLIC ENV{LIBARBYS_PATH})
+message(STATUS "LIBARBYS PATH found " $ENV{LIBARBYS_PATH})
+target_include_directories(van_turco PUBLIC $ENV{LIBARBYS_PATH})
+execute_process(COMMAND ${CMAKE_COMMAND} -E chdir $ENV{LIBARBYS_PATH} tree)
 ELSE()
 message(STATUS "LIBARBYS PATH not found, getting from parent")
 
 target_include_directories(van_turco PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../lib32arbys/)
 ENDIF()
 pico_enable_stdio_usb(van_turco 1)
-pico_enable_stdio_uart(van_turco 0)
-
+pico_enable_stdio_uart(van_turco 1)
 
 pico_add_extra_outputs(van_turco)
