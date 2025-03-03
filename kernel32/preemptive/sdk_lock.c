@@ -1,5 +1,5 @@
 #include "pico/stdlib.h"
-#include"./sdk_lock.hpp"
+#include"./sdk_lock.h"
 #include "../scheduler/scheduler.hpp"
 #include "libarbys/libarbys.hpp"
 

@@ -11,7 +11,7 @@ namespace KERNEL32{
     enum{YIELD,WAIT,EXIT,SEND,RECV,GETPINFO} typedef syscall_type;
 
     #include"./loggin/logs.hpp"
-    //#include"./preemptive/systick.hpp"
+    #include"./preemptive/systick.hpp"
     #include"./context/interrupts.hpp"  
     #include"./context/init/init.hpp"
     #include"./messages/messages.hpp"
@@ -19,8 +19,7 @@ namespace KERNEL32{
     #include"./process/process.hpp"
     #include"./scheduler/scheduler.hpp"
     #include"./syscalls/syscall.hpp"
-    //#include"./preemptive/sdk_lock.hpp"
-
+    #include"./preemptive/sdk_lock.h"
     
 }
 #endif

@@ -6,7 +6,7 @@
 #define PICO_USE_MALLOC_MUTEX 1
 #define lock_owner_id_t int8_t
 #define LOCK_INVALID_OWNER_ID ((lock_owner_id_t)-1)
-#include"./sdk_lock.cpp"
+#include"./sdk_lock.c"
 
 //#define lock_get_caller_owner_id() ((lock_owner_id_t)get_core_num())
 #define lock_get_caller_owner_id() ((lock_owner_id_t)get_task_id())

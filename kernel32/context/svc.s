@@ -121,6 +121,25 @@ isr_svcall:
          pop {pc} /*Now it is getting LR (The address it should return) as the program counter (The address it is executing) */
         
 
+.type isr_systick, %function
+.global isr_systick
+isr_systick:
+/*Save process */
+        mrs r0, psp /*r0 is now the process stack pointer (top of the process stack)*/
+        push_r0 lr
+        __save_context
+        msr psp, r0 /*Now R0 is a parameter for the syscall, containing the process stack */
+
+        /*Now the process is saved into the stack */
+        /*Now we load the kernel from the Main Stack Pointer (Remembering we are in handler mode at this interrupt) */
+        mov r0, sp
+        __load_context
+        pop_r0 r12
+        msr psr_nzcvq, ip
+        mov sp, r0
+        mrs r0, psp /*return the process stack pointer to update the process class */
+         pop {pc} /*Now it is getting LR (The address it should return) as the program counter (The address it is executing) */
+
 .global _switch_context
 _switch_context:
         /*now saving kernel */
@@ -147,6 +166,8 @@ _switch_context:
 
 .global _switch_handler
 _switch_handler:
+        sub sp, #76
+        add r0, sp, #72
         mrs ip, psr /*Save into r12 the process state register */
         mov r2, r0
 
@@ -166,3 +187,5 @@ _switch_handler:
         isb /*clear the pipeline */
         nop
         svc #0 /*Switch again into the kernel but now in handler mode */
+        add sp, #76
+        bx lr

@@ -8,11 +8,19 @@ void set_hw_systick_priority(){
 }
 
 void reset_systick(){
-    systick_hw -> csr = 0b00000000; //Control Status Register, this code disables the timer
+    unsigned int slice = TIME_SLICE;
+    systick_hw -> csr = 0; //Control Status Register, this code disables the timer
     __dsb();
-    hw_set_bits  ((io_rw_32 *)(PPB_BASE + M0PLUS_ICSR_OFFSET),M0PLUS_ICSR_PENDSTCLR_BITS);
-    systick_hw -> rvr = TIME_SLICE - 1UL; //Reset Value Register, value to time on reset
+    __isb();    
+    hw_set_bits((io_rw_32 *)(PPB_BASE + M0PLUS_ICSR_OFFSET),M0PLUS_ICSR_PENDSTCLR_BITS);
+    systick_hw -> rvr = (slice) - 1UL; //Reset Value Register, value to time on reset
     systick_hw -> cvr = 0; //Reset the Current Value Register
-    systick_hw -> csr = 0b00000011; //Enable the timer and the interrupts
-    return;
+
+    uint32_t icsr = *(io_rw_32 *)(PPB_BASE + M0PLUS_ICSR_OFFSET);
+    
+    if (!(icsr & M0PLUS_ICSR_PENDSTCLR_BITS)) {
+        KERNEL32::print("Cleared %d %d %d\n",systick_hw -> rvr,systick_hw -> cvr,systick_hw -> csr);
+        systick_hw->csr = 0x03;  // Enable timer and interrupt
+    }
+        KERNEL32::print("Exiting");
 }
